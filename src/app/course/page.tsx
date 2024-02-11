@@ -1,5 +1,3 @@
-"use client";
-import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Markdown from "react-markdown";
@@ -12,25 +10,17 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-export default function Course() {
-  const [res, setRes] = useState<Array<string>>([]);
-  useEffect(() => {
-    (async () => {
-      const result = await model.generateContent(
-        `Explain first chapter of Precalculus book by Earl W. Swokowski and Jeffery A.Cole.`
-      );
-      const response = await result.response;
-      const text = response.text();
-      setRes([...res, text]);
-    })();
-  });
+export default async function Course() {
+  const result = await model.generateContent(
+    `Explain in detail the topics in the first chapter of Precalculus book by Earl W. Swokowski and Jeffery A.Cole.`
+  );
+  const response = await result.response;
+  const text = response.text();
   return (
     <main className={styles.main}>
       <h1>Precalculus</h1>
       <section>
-        {res.map((r) => (
-          <Markdown>{r}</Markdown>
-        ))}
+        <Markdown>{text}</Markdown>
       </section>
     </main>
   );
